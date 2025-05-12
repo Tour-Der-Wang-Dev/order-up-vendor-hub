@@ -93,7 +93,10 @@ export function AppSidebar() {
             </div>
           )}
         </div>
-        <SidebarTrigger />
+        <SidebarTrigger 
+          onClick={() => setIsCollapsed(!isCollapsed)} 
+          className="mt-2"
+        />
       </SidebarHeader>
 
       <SidebarContent>
