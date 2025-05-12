@@ -23,52 +23,85 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useRestaurantSettings } from "@/hooks/useRestaurantSettings";
 
 const bankAccountSchema = z.object({
-  accountName: z.string().min(2, { message: "Account name is required" }),
-  accountNumber: z.string().min(10, { message: "Valid account number required" }),
-  bankName: z.string().min(2, { message: "Bank name is required" }),
+  account_name: z.string().min(2, { message: "Account name is required" }),
+  account_number: z.string().min(10, { message: "Valid account number required" }),
+  bank_name: z.string().min(2, { message: "Bank name is required" }),
   branch: z.string().optional(),
 });
 
 type BankAccountValues = z.infer<typeof bankAccountSchema>;
 
 const Settings = () => {
-  const [receiveOrderNotifications, setReceiveOrderNotifications] = useState(true);
-  const [receiveReviewNotifications, setReceiveReviewNotifications] = useState(true);
-  const [autoAcceptOrders, setAutoAcceptOrders] = useState(false);
-  const [restaurantStatus, setRestaurantStatus] = useState(true);
+  const {
+    settings,
+    isLoadingSettings,
+    updateSettings,
+    isUpdatingSettings,
+    
+    bankAccount,
+    isLoadingBankAccount,
+    updateBankAccount,
+    isUpdatingBankAccount,
+  } = useRestaurantSettings();
+  
+  const [preparationTime, setPreparationTime] = useState<number>(
+    settings?.preparation_time_minutes || 20
+  );
 
   const form = useForm<BankAccountValues>({
     resolver: zodResolver(bankAccountSchema),
     defaultValues: {
-      accountName: "Tour Der Wang Co., Ltd.",
-      accountNumber: "1234567890",
-      bankName: "Bangkok Bank",
-      branch: "Sukhumvit",
+      account_name: bankAccount?.account_name || "Tour Der Wang Co., Ltd.",
+      account_number: bankAccount?.account_number || "1234567890",
+      bank_name: bankAccount?.bank_name || "Bangkok Bank",
+      branch: bankAccount?.branch || "Sukhumvit",
     },
   });
-
-  const onSubmit = (data: BankAccountValues) => {
-    console.log(data);
-    toast.success("Payment information updated", {
-      description: "Your bank account information has been saved successfully.",
-    });
+  
+  // Update form when bank account data loads
+  useState(() => {
+    if (bankAccount) {
+      form.reset({
+        account_name: bankAccount.account_name,
+        account_number: bankAccount.account_number,
+        bank_name: bankAccount.bank_name,
+        branch: bankAccount.branch || "",
+      });
+    }
+  });
+  
+  const handleToggleSetting = (field: string, value: boolean) => {
+    if (settings) {
+      updateSettings({ [field]: value });
+    }
+  };
+  
+  const handlePreparationTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    setPreparationTime(value);
+  };
+  
+  const savePreparationTime = () => {
+    if (settings) {
+      updateSettings({ preparation_time_minutes: preparationTime });
+    }
   };
 
-  const handleToggleRestaurantStatus = () => {
-    const newStatus = !restaurantStatus;
-    setRestaurantStatus(newStatus);
-    toast(
-      newStatus ? "Restaurant is now open" : "Restaurant is now closed",
-      {
-        description: newStatus
-          ? "You are now accepting new orders"
-          : "You will not receive new orders until reopened",
-      }
+  const onSubmitBankAccount = (data: BankAccountValues) => {
+    updateBankAccount(data);
+  };
+  
+  if (isLoadingSettings || isLoadingBankAccount) {
+    return (
+      <div className="flex justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-vendor-orange" />
+      </div>
     );
-  };
+  }
 
   return (
     <div className="space-y-6">
@@ -85,17 +118,18 @@ const Settings = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">
-                {restaurantStatus ? "Restaurant is open" : "Restaurant is closed"}
+                {settings?.restaurant_status ? "Restaurant is open" : "Restaurant is closed"}
               </p>
               <p className="text-sm text-muted-foreground">
-                {restaurantStatus
+                {settings?.restaurant_status
                   ? "You will receive new orders"
                   : "You will not receive new orders"}
               </p>
             </div>
             <Switch
-              checked={restaurantStatus}
-              onCheckedChange={handleToggleRestaurantStatus}
+              checked={settings?.restaurant_status || false}
+              onCheckedChange={(checked) => handleToggleSetting('restaurant_status', checked)}
+              disabled={isUpdatingSettings}
             />
           </div>
         </CardContent>
@@ -125,8 +159,9 @@ const Settings = () => {
                   </p>
                 </div>
                 <Switch
-                  checked={receiveOrderNotifications}
-                  onCheckedChange={setReceiveOrderNotifications}
+                  checked={settings?.receive_order_notifications || false}
+                  onCheckedChange={(checked) => handleToggleSetting('receive_order_notifications', checked)}
+                  disabled={isUpdatingSettings}
                 />
               </div>
               
@@ -138,8 +173,9 @@ const Settings = () => {
                   </p>
                 </div>
                 <Switch
-                  checked={receiveReviewNotifications}
-                  onCheckedChange={setReceiveReviewNotifications}
+                  checked={settings?.receive_review_notifications || false}
+                  onCheckedChange={(checked) => handleToggleSetting('receive_review_notifications', checked)}
+                  disabled={isUpdatingSettings}
                 />
               </div>
             </CardContent>
@@ -163,8 +199,9 @@ const Settings = () => {
                   </p>
                 </div>
                 <Switch
-                  checked={autoAcceptOrders}
-                  onCheckedChange={setAutoAcceptOrders}
+                  checked={settings?.auto_accept_orders || false}
+                  onCheckedChange={(checked) => handleToggleSetting('auto_accept_orders', checked)}
+                  disabled={isUpdatingSettings}
                 />
               </div>
               
@@ -181,8 +218,11 @@ const Settings = () => {
                     min={5}
                     max={60}
                     step={5}
-                    defaultValue={20}
+                    value={preparationTime}
+                    onChange={handlePreparationTimeChange}
+                    onBlur={savePreparationTime}
                     className="w-16"
+                    disabled={isUpdatingSettings}
                   />
                   <span>minutes</span>
                 </div>
@@ -201,10 +241,10 @@ const Settings = () => {
             </CardHeader>
             <CardContent>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmitBankAccount)} className="space-y-4">
                   <FormField
                     control={form.control}
-                    name="accountName"
+                    name="account_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Account Holder Name</FormLabel>
@@ -218,7 +258,7 @@ const Settings = () => {
                   
                   <FormField
                     control={form.control}
-                    name="accountNumber"
+                    name="account_number"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Account Number</FormLabel>
@@ -233,7 +273,7 @@ const Settings = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="bankName"
+                      name="bank_name"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Bank Name</FormLabel>
@@ -263,8 +303,14 @@ const Settings = () => {
                   <Button 
                     type="submit"
                     className="bg-vendor-orange hover:bg-vendor-dark-orange"
+                    disabled={isUpdatingBankAccount}
                   >
-                    Save Payment Information
+                    {isUpdatingBankAccount ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : "Save Payment Information"}
                   </Button>
                 </form>
               </Form>
