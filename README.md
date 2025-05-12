@@ -1,73 +1,123 @@
-# Welcome to your Lovable project
 
-## Project info
+# OrderUp Vendor Hub
 
-**URL**: https://lovable.dev/projects/309d8046-562c-473f-a28f-2a271705f5df
+OrderUp Vendor Hub is a comprehensive restaurant management system that allows restaurant owners to manage their menus, track orders, view analytics, and update their profiles all in one place.
 
-## How can I edit this code?
+![OrderUp Logo](/lovable-uploads/90494f25-3cb7-4324-84b1-ae6a73fe364b.png)
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- 🔐 **Authentication** - Secure login for restaurant owners
+- 📊 **Dashboard** - Overview of key metrics and recent orders
+- 🍲 **Menu Management** - Add, edit, and organize menu items
+- 📋 **Order Management** - Track and update order status
+- 📈 **Analytics** - Sales reports and performance metrics
+- 👤 **Profile Management** - Update restaurant details and settings
+- ⚙️ **Settings** - Configure notifications, payment information, and more
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/309d8046-562c-473f-a28f-2a271705f5df) and start prompting.
+## Technologies Used
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**:
+  - React 18 with TypeScript
+  - Vite for fast development and optimized builds
+  - React Router for navigation
+  - Tailwind CSS for styling
+  - Shadcn UI component library
+  - Lucide React for icons
+  - Recharts for data visualization
 
-**Use your preferred IDE**
+- **Backend**:
+  - Supabase for authentication, database, and storage
+  - Tanstack React Query for data fetching and state management
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Prerequisites
 
-Follow these steps:
+- Node.js (v18 or later)
+- npm or bun
 
+### Environment Setup
+
+1. Clone the repository:
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+git clone <repository-url>
+cd orderup-vendor-hub
 ```
 
-**Edit a file directly in GitHub**
+2. Install the dependencies:
+```sh
+npm install
+# or
+bun install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Create a `.env` file in the project root with your Supabase credentials:
+```
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
 
-**Use GitHub Codespaces**
+4. Start the development server:
+```sh
+npm run dev
+# or
+bun run dev
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+5. Open your browser and go to `http://localhost:8080`
 
-## What technologies are used for this project?
+## Building for Production
 
-This project is built with:
+```sh
+npm run build
+# or
+bun run build
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The build output will be in the `dist` folder.
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/309d8046-562c-473f-a28f-2a271705f5df) and click on Share -> Publish.
+This project can be deployed to any static hosting service like Vercel, Netlify, or GitHub Pages. The only requirement is to set up the environment variables for Supabase.
 
-## Can I connect a custom domain to my Lovable project?
+## Project Structure
 
-Yes, you can!
+- `/src`: Source code
+  - `/components`: Reusable UI components
+  - `/hooks`: Custom React hooks
+  - `/lib`: Utility functions and configurations
+  - `/pages`: Page components
+  - `/components/ui`: Shadcn UI components
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Contributing
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+We welcome contributions to the OrderUp Vendor Hub project! Please follow these steps:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/your-feature-name`)
+3. Make your changes
+4. Run tests to ensure everything works
+5. Commit your changes (`git commit -m 'Add some feature'`)
+6. Push to the branch (`git push origin feature/your-feature-name`)
+7. Open a Pull Request
+
+### Code Style
+
+- Follow the existing code style
+- Use TypeScript for type safety
+- Document your code with comments
+- Write meaningful commit messages
+
+### Bug Reports
+
+If you find a bug, please create an issue with the following information:
+- Description of the bug
+- Steps to reproduce
+- Expected behavior
+- Screenshots (if applicable)
+- Environment information (browser, OS, etc.)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

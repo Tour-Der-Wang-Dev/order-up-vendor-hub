@@ -25,9 +25,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/useAuth";
 
 export function AppSidebar() {
   const location = useLocation();
+  const { signOut } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
@@ -69,7 +71,6 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      defaultCollapsed={isCollapsed}
       className="border-r border-gray-200 min-h-screen"
       onCollapsedChange={setIsCollapsed}
     >
@@ -99,8 +100,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path} className="my-1">
-                  <SidebarMenuButton asChild active={isActive(item.path)}>
-                    <Link to={item.path} className="w-full">
+                  <SidebarMenuButton asChild>
+                    <Link 
+                      to={item.path} 
+                      className={`w-full ${isActive(item.path) ? "bg-orange-100 text-vendor-orange font-medium" : ""}`}
+                    >
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
                     </Link>
@@ -130,6 +134,7 @@ export function AppSidebar() {
             variant="ghost"
             size="icon"
             className="text-gray-500 hover:text-vendor-orange"
+            onClick={() => signOut()}
           >
             <LogOut className="h-5 w-5" />
           </Button>
