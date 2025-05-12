@@ -5,29 +5,22 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.NEXT_PUBLIC_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Use hardcoded values if environment variables are not available
-// This is for development purposes only and should be replaced with proper environment variables in production
+// Set default values if environment variables are not available
+const finalSupabaseUrl = supabaseUrl || "https://utcncwvgswagmkgjxees.supabase.co";
+const finalSupabaseAnonKey = supabaseAnonKey || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0Y25jd3Znc3dhZ21rZ2p4ZWVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NTAwODQsImV4cCI6MjA2MjUyNjA4NH0.PGZvJjTz_QwidwepbYlVIN9142CqlY6Dks5xmCe4QYc";
+
+// Log a warning if using backup values
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Environment variables not found, using backup values');
-  const backupUrl = "https://utcncwvgswagmkgjxees.supabase.co";
-  const backupKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0Y25jd3Znc3dhZ21rZ2p4ZWVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY5NTAwODQsImV4cCI6MjA2MjUyNjA4NH0.PGZvJjTz_QwidwepbYlVIN9142CqlY6Dks5xmCe4QYc";
-  
-  // Create Supabase client with backup values
-  export const supabase = createClient(backupUrl, backupKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-  });
-} else {
-  // Create Supabase client with environment variables
-  export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-  });
 }
+
+// Create Supabase client
+export const supabase = createClient(finalSupabaseUrl, finalSupabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+});
 
 // Type definitions for common Supabase tables
 export type Vendor = {
