@@ -72,6 +72,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       className="border-r border-gray-200 min-h-screen"
+      defaultCollapsed={isCollapsed}
       onCollapsedChange={setIsCollapsed}
     >
       <SidebarHeader className="py-4">
