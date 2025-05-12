@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useCallback, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -31,7 +32,8 @@ export function AppSidebar() {
   const { signOut } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const menuItems = [
+  // Memoize menu items to prevent unnecessary re-renders
+  const menuItems = useMemo(() => [
     {
       title: "Dashboard",
       icon: Home,
@@ -62,16 +64,16 @@ export function AppSidebar() {
       icon: Settings,
       path: "/settings",
     },
-  ];
+  ], []);
 
-  const isActive = (path: string) => {
+  // Memoize isActive function to prevent recreating on each render
+  const isActive = useCallback((path: string) => {
     return location.pathname === path;
-  };
+  }, [location.pathname]);
 
   return (
     <Sidebar
       className="border-r border-gray-200 min-h-screen"
-      onCollapsedChange={setIsCollapsed}
     >
       <SidebarHeader className="py-4">
         <div className="flex items-center justify-center">
@@ -85,6 +87,7 @@ export function AppSidebar() {
                 src="/lovable-uploads/90494f25-3cb7-4324-84b1-ae6a73fe364b.png"
                 alt="Tour Der Wang"
                 className="h-10"
+                loading="lazy" // Add lazy loading for images
               />
               <div className="ml-2 text-lg font-bold text-vendor-orange">OrderUp</div>
             </div>
